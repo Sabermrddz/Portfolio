@@ -243,7 +243,7 @@ function CombinedTagline() {
     style.id = "ct-style";
     style.textContent = `
       .ct-line { margin: 0; }
-      .ct-line-1 { font-family: ui-serif, Georgia, 'Times New Roman', serif; font-size: clamp(1.05rem,2.0vw,1.75rem); line-height:1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; animation: ctFloat 7s ease-in-out infinite; }
+      .ct-line-1 { font-family: ui-serif, Georgia, 'Times New Roman', serif; font-size: clamp(1.05rem,2.0vw,1.75rem); line-height:1.05; white-space: normal; overflow: visible; animation: ctFloat 7s ease-in-out infinite; }
       .ct-line-1 .ct-acid { color: var(--color-acid); font-style: italic; font-weight: 400; animation: ctGlow 2.8s ease-in-out infinite; }
       .ct-line-2 { font-size: clamp(0.95rem,1.7vw,1.25rem); margin-top:0.55rem; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.78); font-weight: 500; }
       .ct-word { display:inline-block; opacity:0; transform: translateY(10px); filter: blur(6px); animation: ctReveal 0.68s cubic-bezier(0.22,1,0.36,1) forwards; animation-delay: calc(var(--i) * 0.045s); }
@@ -365,9 +365,8 @@ export default function Hero({ started }: { started: boolean }) {
                 </motion.span>
               ))}
             </span>
-            {/* v1 font style (Syne extrabold, clamp, 72% stroke, drop-shadow) — main reveal animation kept */}
             <span
-              className="block overflow-hidden pl-[6vw] whitespace-nowrap text-[clamp(3.4rem,11vw,10rem)] font-extrabold tracking-tight [filter:drop-shadow(0_4px_18px_rgba(244,241,234,0.10))]"
+              className="block overflow-hidden pl-[6vw] whitespace-nowrap text-[clamp(2.5rem,13vw,10rem)] font-extrabold tracking-tight [filter:drop-shadow(0_4px_18px_rgba(244,241,234,0.10))]"
               style={{ fontFamily: '"Syne", sans-serif' }}
             >
               {LINE_TWO.map((letter, i) => (
