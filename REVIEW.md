@@ -1,70 +1,59 @@
-# Technical Review: Portfolio Project
+# Portfolio Project Architecture & Migration Review
 
-## 1. Project Overview
-This project is a **Full-Stack Web Application**. The frontend is built using **React and Vite**, heavily utilizing Tailwind CSS, GSAP, and Framer Motion for styling and animations. Unlike a purely static frontend, this project includes a dedicated **Node.js backend** to handle contact form submissions and track visitor analytics via email.
+## Project Overview
 
-## 2. Server/ Backend Analysis
-The backend is located entirely within the `server/` directory and is built using the **Express.js** framework.
+The project is now a dual-mode application:
+1. **Frontend**: A React Single Page Application (SPA) built with Vite, TypeScript, and modern CSS/animations.
+2. **Backend**:
+   - **New Architecture**: An Azure Functions API located in the `api/` directory. This is the active backend structure intended for deployment on Azure Static Web Apps (Free tier).
+   - **Legacy Architecture**: An Express server located in the `server/` directory. This has been retained purely for reference and is no longer used in the active deployment pipeline.
 
-### File Summaries
-- **`index.js`**: The main entry point for the Express server. It handles environment variable loading, middleware configuration (CORS, JSON parsing), defines the API endpoints, and starts the server process. In production mode, it also serves the compiled static Vite frontend (`dist/` folder).
-- **`visitor.js`**: A utility module that provides functions to parse the `user-agent` string to detect the visitor's device, browser, and OS. It also handles constructing the HTML email template for visitor notifications and sending it.
-- **`visitor.d.ts` & `visitor.test.js`**: TypeScript definitions and test coverage for the visitor utility functions.
+By moving to Azure Functions and Azure Static Web Apps, the frontend and backend can be hosted together in a single service without the need for a persistently running Node.js server, significantly reducing hosting costs and simplifying deployment.
 
-### API Endpoints
-- **`GET /api/health`**: A simple health check route that returns the server status and indicates if the email credentials are fully configured.
-- **`POST /api/contact`**: Receives data from the frontend contact form (`name`, `email`, `message`). It performs basic validation and utilizes Nodemailer to send the message directly to the site owner's email address.
-- **`POST /api/visit`**: An analytics endpoint triggered when a user visits the site. It collects visitor metadata and sends a detailed notification email to the site owner.
+## New `api/` Folder Structure
 
-### Visitor Metadata Collection
-The server collects visitor data primarily by parsing standard HTTP headers in `visitor.js`:
-- **IP Address**: `req.headers["x-forwarded-for"]` or `req.socket.remoteAddress`
-- **Device, Browser, OS**: Parsed via regex matching against `req.headers["user-agent"]`
-- **Page Visited**: `req.headers.referer`
-- **Language**: `req.headers["accept-language"]`
+The `api/` directory utilizes the Azure Functions v4 Node.js programming model.
 
-### Email Sending Mechanism
-Emails are sent via **SMTP** using the **Nodemailer** package (`nodemailer`). The server creates a transport explicitly configured to use the `"gmail"` service, expecting a Gmail address and an App Password.
+- **`api/package.json` & `api/host.json`**: Standard Azure Functions v4 configuration files, including dependencies like `@azure/functions` and `nodemailer`.
+- **`api/src/functions/contact.js`**: An HTTP-triggered Azure Function that replaces the legacy `POST /api/contact` Express route. It validates incoming contact form submissions and uses `nodemailer` to dispatch the email.
+- **`api/src/functions/visit.js`**: An HTTP-triggered Azure Function that replaces the legacy `POST /api/visit` Express route. It parses visitor metadata (IP, user-agent, language, page, timezone) from the Azure request context and uses `nodemailer` to send an analytics email.
+- **`api/src/functions/health.js`**: An HTTP-triggered Azure Function that replaces the legacy `GET /api/health` Express route, providing a simple status check and verifying if email credentials are set.
+- **`api/src/visitor.js`**: A shared helper module (adapted from `server/visitor.js`) containing reusable logic for device detection, HTML email templating, and the core visitor email sending logic. Both `contact.js` and `visit.js` rely on this.
 
-### Environment Variables
-The server relies on the `.env` file for configuration. Based on `.env.example` and the code, it expects:
-- `EMAIL_HOST_USER`
-- `EMAIL_HOST_PASSWORD`
-- `PORT` (Optional)
-- `NODE_ENV` (Implicitly checked to serve static files in production)
+## Environment Variables
 
-## 3. Package.json Analysis
+All environment variables have remained **completely unchanged** to ensure a seamless transition:
+- `EMAIL_HOST_USER`: Your Gmail address.
+- `EMAIL_HOST_PASSWORD`: Your 16-digit Google App Password.
 
-### Backend Dependencies
-- **`express`**: Web framework for handling routes.
-- **`cors`**: Middleware to enable Cross-Origin Resource Sharing.
-- **`dotenv`**: Loads environment variables from the `.env` file.
-- **`nodemailer`**: Module for sending emails.
-- **`concurrently` (devDependency)**: Used to run multiple npm scripts simultaneously.
+The new Azure Functions read from these exact same variables via `process.env`.
 
-### Scripts
-- **`dev`**: `vite` — Starts the frontend React development server.
-- **`build`**: `vite build` — Compiles the React frontend for production into the `dist/` folder.
-- **`start`** / **`server`**: `node server/index.js` — Starts the Node.js Express backend.
-- **`dev:all`**: Runs `concurrently "vite" "node server/index.js"` — Starts both the Vite frontend and Express backend at the same time for local full-stack development.
+## `staticwebapp.config.json` Summary
 
-### Server Execution Model
-The server is currently designed as a **long-running process**. It uses `app.listen(PORT)` to bind to a port and continuously listen for incoming HTTP requests. 
+A `staticwebapp.config.json` file has been added to the project root. This configuration ensures:
+1. **SPA Fallback Routing**: Unrecognized frontend routes (e.g., if a user refreshes a page on a specific route) automatically fall back to `/index.html`, which is required for React Router to function properly.
+2. **API Passthrough**: Azure Static Web Apps automatically proxies any requests to `/api/*` directly to the Azure Functions backend (`api/` folder) without any additional configuration required in the frontend fetch calls.
+3. **Caching**: Disables caching on dynamic routes to ensure fresh data.
 
-## 4. Deployment Requirements
+## Deployment Recommendation: Azure Static Web Apps
 
-### Hosting Approach
-Because it is a long-running Express server, you cannot deploy this to a purely static host (like GitHub Pages or standard Netlify). 
-- **Current architecture**: Requires a persistent Node.js environment (e.g., Azure App Service, Heroku, Render, DigitalOcean App Platform).
-- **Serverless adaptation**: The backend logic could easily be converted to serverless functions (like Azure Functions, AWS Lambda, or Next.js API routes) since it primarily consists of stateless POST endpoints that send emails. You would just need to extract the route handlers from `index.js` into standalone function files.
+**Azure Static Web Apps (Free Tier)** is the recommended hosting approach. It will automatically build and deploy both your React frontend and your Azure Functions backend from a single GitHub repository.
 
-### Configuration & Security Tweaks for Production
-- **CORS**: Currently set to `app.use(cors())`, which allows requests from *any* origin. In production, this should be restricted to your exact frontend domain (e.g., `cors({ origin: 'https://yourportfolio.com' })`).
-- **Secrets**: The `EMAIL_HOST_USER` and `EMAIL_HOST_PASSWORD` must be securely injected as environment variables in your hosting provider's dashboard, never committed to version control.
+### Manual Steps Required in Azure Portal / CLI
 
-## 5. Summary Table
+To complete the deployment, you will need to perform the following steps:
 
-| Component | Role / Purpose | Entry File | Recommended Hosting Approach |
-| :--- | :--- | :--- | :--- |
-| **Frontend** | React SPA handling the UI, animations, and form logic. | `src/main.tsx` | Static Site Hosting (Azure Static Web Apps, Vercel) or served by backend. |
-| **Backend** | Express API handling email delivery for contact forms and visitor analytics. | `server/index.js` | Persistent Node.js Server (Azure App Service, Render) OR refactor to Serverless APIs. |
+- [ ] **Create the Resource**: In the Azure Portal, create a new "Static Web App".
+- [ ] **Link GitHub Repository**: Connect it to your GitHub repository (`Sabermrddz/Portfolio`).
+- [ ] **Configure Build Settings**:
+  - Build Presets: React
+  - App location: `/` (Root directory for the frontend)
+  - Api location: `api` (Directory for the Azure Functions)
+  - Output location: `dist` (Vite's default build folder)
+- [ ] **Set Application Settings**: Once the resource is created, navigate to **Settings > Configuration** in the Azure Portal and add your environment variables:
+  - Name: `EMAIL_HOST_USER`, Value: (Your Gmail)
+  - Name: `EMAIL_HOST_PASSWORD`, Value: (Your 16-digit App Password)
+- [ ] **Verify Deployment**: Azure will automatically trigger a GitHub Action to build and deploy your app. Check the Actions tab in your GitHub repo for the status.
+
+---
+*Note: The old Express backend in `server/` remains fully intact. If you ever need to run the legacy server locally, you can still use `npm run server`, though the frontend now expects to communicate with the Azure Functions when deployed to SWA.*
