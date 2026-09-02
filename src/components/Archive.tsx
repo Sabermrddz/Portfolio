@@ -24,7 +24,7 @@ const PROJECTS = [
     lang: "JS",
     web: true,
     featured: false,
-    url: "https://disui-site.icyhill-613c94fd.francecentral.azurecontainerapps.io/index.html",
+    url: "https://disui.vercel.app/",
   },
   {
     img: "/logos/readestateagency.jpeg",

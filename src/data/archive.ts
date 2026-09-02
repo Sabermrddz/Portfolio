@@ -102,7 +102,7 @@ export const projects: Project[] = [
     lang: "javascript",
     web: true,
     tags: ["Node.js", "Distribution", "Replication", "Sharding"],
-    url: "https://disui-site.icyhill-613c94fd.francecentral.azurecontainerapps.io/index.html",
+    url: "https://disui.vercel.app/",
     year: "2025",
     img: "/images/work-7.jpg",
   },
