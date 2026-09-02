@@ -227,10 +227,20 @@
 .contact-tilt * {
   transform-style: preserve-3d;
 }
+@media (hover: none) {
+  .contact-tilt {
+    transform: none !important;
+    will-change: auto;
+  }
+  .contact-tilt * {
+    transform-style: flat;
+  }
+}
 
 html {
   background: var(--color-ink);
   scroll-behavior: initial;
+  overflow-x: hidden;
 }
 
 html.lenis,

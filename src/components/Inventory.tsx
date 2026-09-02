@@ -40,7 +40,7 @@ export default function Inventory() {
   return (
     <section
       id="inventory"
-      className="relative border-t border-line px-6 py-28 md:px-10 md:py-40"
+      className="relative border-t border-line px-4 py-20 sm:px-6 sm:py-28 md:px-10 md:py-40"
     >
       {/* Header — made more visible & clear */}
       <div className="mb-14 md:mb-20">
@@ -48,7 +48,7 @@ export default function Inventory() {
           (02 — Inventory)
         </span>
         <motion.h2
-          className="font-display text-5xl font-medium uppercase leading-[0.95] tracking-tight text-paper md:text-8xl"
+          className="font-display text-4xl font-medium uppercase leading-[0.95] tracking-tight text-paper sm:text-5xl md:text-8xl"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}

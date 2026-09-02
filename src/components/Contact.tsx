@@ -45,6 +45,10 @@ export default function Contact() {
     typeof window !== "undefined"
       ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
       : false;
+  const isTouch =
+    typeof window !== "undefined"
+      ? !window.matchMedia("(hover: hover) and (pointer: fine)").matches
+      : false;
 
   const tiltHovered = useRef(false);
   const handleTiltMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -280,8 +284,8 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="relative py-24 md:py-32">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+    <section id="contact" className="relative py-16 sm:py-24 md:py-32">
+      <div className="mx-auto max-w-7xl px-4 sm:px-8">
         <SectionHead
           index="05"
           label="CONTACT"
@@ -301,7 +305,7 @@ export default function Contact() {
         <div
           ref={stageRef}
           className="relative mt-12 w-full overflow-hidden rounded-2xl border border-white/10 bg-transparent"
-          style={{ height: "clamp(340px, 46vw, 520px)" }}
+          style={{ height: "clamp(260px, 50vw, 520px)" }}
           role="group"
           aria-label="Orbit stage with six social profile bubbles"
         >
@@ -335,7 +339,7 @@ export default function Contact() {
               rel="noreferrer"
               aria-label={`${bubble.name.charAt(0).toUpperCase() + bubble.name.slice(1)} — ${bubble.label}`}
               className="bubble absolute left-0 top-0 z-10 will-change-transform"
-              style={{ width: "clamp(56px, 7.2vw, 84px)" }}
+              style={{ width: "clamp(48px, 13vw, 84px)" }}
               onPointerEnter={pause(i)}
               onPointerLeave={resume(i)}
               onFocus={pause(i)}
@@ -375,11 +379,11 @@ export default function Contact() {
         </div>
 
         {/* ================= Simplified Prefer email? — no 3D, lightweight auto JS ================= */}
-        <div className="relative mt-16 overflow-hidden rounded-[2.1rem] border border-white/[0.08] bg-transparent p-4 sm:p-6 lg:p-7">
+        <div className="relative mt-12 overflow-hidden rounded-[1.6rem] border border-white/[0.08] bg-transparent p-3 sm:mt-16 sm:rounded-[2.1rem] sm:p-6 lg:p-7">
 
           <div className="relative mb-6 flex flex-col gap-4 border-b border-white/[0.06] pb-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
-              <h3 className="font-serif text-[clamp(2.4rem,5vw,4.4rem)] leading-[0.96] tracking-tight text-paper">
+              <h3 className="font-serif text-[clamp(1.8rem,5vw,4.4rem)] leading-[0.96] tracking-tight text-paper">
                 Prefer <span className="italic text-paper">email?</span>
               </h3>
             </div>
@@ -401,14 +405,14 @@ export default function Contact() {
               onMouseLeave={handleTiltLeave}
               onPointerEnter={handleTiltEnter}
               onPointerLeave={handleTiltLeave}
-              className="contact-tilt relative overflow-hidden rounded-[1.8rem] border border-white/[0.08] bg-transparent p-6 sm:p-7 lg:p-8"
+              className="contact-tilt relative overflow-hidden rounded-[1.4rem] border border-white/[0.08] bg-transparent p-4 sm:rounded-[1.8rem] sm:p-7 lg:p-8"
               style={
                 {
                   "--rx": "0deg",
                   "--ry": "0deg",
                   "--mx": "50%",
                   "--my": "50%",
-                  transform: "perspective(1200px) rotateX(var(--rx)) rotateY(var(--ry))",
+                  transform: isTouch ? "none" : "perspective(1200px) rotateX(var(--rx)) rotateY(var(--ry))",
                   transformStyle: "preserve-3d",
                 } as React.CSSProperties
               }

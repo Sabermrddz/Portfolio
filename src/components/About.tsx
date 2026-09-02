@@ -125,7 +125,7 @@ export default function About() {
   }, []);
 
   return (
-    <section id="about" className="relative px-6 py-28 md:px-10 md:py-44">
+    <section id="about" className="relative px-4 py-20 sm:px-6 sm:py-28 md:px-10 md:py-44">
       <div className="mb-10 flex items-center justify-between gap-4">
         <span className="inline-flex items-center rounded-full border border-white/15 bg-white/[0.06] px-5 py-2 font-mono text-[13px] font-semibold uppercase tracking-[0.28em] text-paper backdrop-blur-sm md:px-6 md:py-2.5 md:text-[15px]">
           (01 — About)
@@ -145,7 +145,7 @@ export default function About() {
       </div>
 
       {/* Quote + traits */}
-      <div className="mt-20 grid grid-cols-12 gap-8 md:mt-28">
+      <div className="mt-14 grid grid-cols-12 gap-6 sm:mt-20 sm:gap-8 md:mt-28">
         <motion.blockquote
           className="col-span-12 border-l-2 border-acid pl-6 md:col-span-6 md:pl-8"
           initial={{ opacity: 0, y: 30 }}
@@ -153,7 +153,7 @@ export default function About() {
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.8, ease: EASE }}
         >
-          <p className="font-display text-2xl font-medium leading-snug text-paper md:text-4xl">
+          <p className="font-display text-xl font-medium leading-snug text-paper sm:text-2xl md:text-4xl">
             “Most portfolios shout. This one <span className="text-acid">files</span> — only
             shipped, running work stays on record.”
           </p>
@@ -184,7 +184,7 @@ export default function About() {
 
       {/* Merged archive principle — shorter, no box, bigger & visible */}
       <motion.p
-        className="mx-auto mt-16 max-w-4xl text-center font-display text-2xl font-medium leading-[1.15] tracking-tight text-paper md:mt-24 md:text-[2.1rem] md:leading-[1.15]"
+        className="mx-auto mt-12 max-w-4xl text-center font-display text-xl font-medium leading-[1.15] tracking-tight text-paper sm:mt-16 sm:text-2xl md:mt-24 md:text-[2.1rem] md:leading-[1.15]"
         initial={{ opacity: 0, y: 18 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
@@ -195,12 +195,12 @@ export default function About() {
       </motion.p>
 
       {/* Image + stats */}
-      <div ref={imgRef} className="mt-16 grid grid-cols-12 gap-6 md:mt-24">
+      <div ref={imgRef} className="mt-12 grid grid-cols-12 gap-4 sm:mt-16 sm:gap-6 md:mt-24">
         <div className="relative col-span-12 overflow-hidden rounded-sm md:col-span-7">
           <motion.img
             src="/images/studio.jpg"
             alt="The archive desk, working late from Batna"
-            className="h-[46vh] w-full scale-[1.28] object-cover md:h-[68vh]"
+            className="h-[36vh] w-full scale-[1.28] object-cover sm:h-[46vh] md:h-[68vh]"
             loading="lazy"
             decoding="async"
             style={{ y: imgY }}
@@ -223,7 +223,7 @@ export default function About() {
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.7, delay: i * 0.08, ease: EASE }}
               >
-                <p className="font-display text-4xl font-medium text-paper md:text-5xl">
+                <p className="font-display text-3xl font-medium text-paper sm:text-4xl md:text-5xl">
                   <CountUp
                     target={s.target}
                     decimals={(s as { decimals?: number }).decimals ?? 0}

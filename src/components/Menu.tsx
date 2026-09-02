@@ -28,14 +28,14 @@ export default function Menu({ open, onNavigate }: MenuProps) {
           animate={{ y: 0, transition: { duration: 0.7, ease: EASE } }}
           exit={{ y: "-100%", transition: { duration: 0.65, ease: EASE } }}
         >
-          <div className="flex h-full flex-col justify-between overflow-y-auto px-6 pb-8 pt-24 md:px-10 md:pt-32">
+          <div className="flex h-full flex-col justify-between overflow-y-auto px-4 pb-6 pt-20 sm:px-6 sm:pb-8 sm:pt-24 md:px-10 md:pt-32">
             <nav className="flex flex-col">
               {links.map((link, i) => (
                 <div key={link.label} className="overflow-hidden border-b border-ink/15">
                   <motion.button
                     data-cursor="hover"
                     onClick={() => onNavigate(link.target)}
-                    className="group flex w-full items-baseline gap-4 py-1.5 text-left md:gap-8 md:py-2"
+                    className="group flex w-full items-baseline gap-3 py-1 text-left sm:gap-4 md:gap-8 md:py-2"
                     initial={{ y: "110%" }}
                     animate={{ y: 0, transition: { duration: 0.8, delay: 0.25 + i * 0.06, ease: EASE } }}
                     exit={{ y: "110%", transition: { duration: 0.4, ease: EASE } }}

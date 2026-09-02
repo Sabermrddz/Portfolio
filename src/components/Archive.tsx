@@ -159,21 +159,21 @@ export default function Archive() {
     <section id="archive" className="relative">
       <div ref={wrap} className="relative h-[100svh] overflow-hidden bg-night text-ink">
         {/* header — different font types for distinction */}
-        <div className="absolute inset-x-[6vw] top-24 z-20 flex items-center justify-between gap-4 md:top-28">
-          <span className="flex items-center gap-3 font-body text-[15px] font-bold uppercase tracking-[0.15em] text-paper drop-shadow-[0_1px_3px_rgba(0,0,0,0.65)] md:text-[18px]">
+        <div className="absolute inset-x-[4vw] top-20 z-20 flex flex-col gap-2 sm:inset-x-[6vw] sm:top-24 sm:flex-row sm:items-center sm:justify-between sm:gap-4 md:top-28">
+          <span className="flex items-center gap-3 font-body text-[13px] font-bold uppercase tracking-[0.15em] text-paper drop-shadow-[0_1px_3px_rgba(0,0,0,0.65)] sm:text-[15px] md:text-[18px]">
             <span className="h-2 w-2 animate-pulse-dot rounded-full bg-lime shadow-[0_0_10px_rgba(217,255,74,0.6)]" />
             04 — Projects Archive
           </span>
-          <span className="font-body text-[13px] font-medium tracking-[0.1em] text-paper/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)] md:text-[15px]">
+          <span className="font-body text-[11px] font-medium tracking-[0.1em] text-paper/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)] sm:text-[13px] md:text-[15px]">
             ( 08 entries — 2024 → 2025 )
           </span>
         </div>
 
         {/* horizontal track */}
-        <div ref={track} className="flex h-full w-max items-center gap-[4vw] pl-[6vw] pr-[12vw] pt-16 md:pt-10">
+        <div ref={track} className="flex h-full w-max items-center gap-[3vw] pl-[4vw] pr-[8vw] pt-24 sm:gap-[4vw] sm:pl-[6vw] sm:pr-[12vw] sm:pt-16 md:pt-10">
           {/* intro panel */}
           <div className="flex w-[82vw] shrink-0 flex-col justify-center md:w-[30vw]">
-            <h3 className="font-display text-[clamp(2.6rem,5.2vw,4.8rem)] font-semibold leading-[0.98] tracking-tight text-ink">
+            <h3 className="font-display text-[clamp(2rem,5.2vw,4.8rem)] font-semibold leading-[0.98] tracking-tight text-ink">
               Shipped,
               <br />
               not just
@@ -236,10 +236,10 @@ export default function Archive() {
               {/* bottom info */}
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-night/88 via-night/45 to-transparent p-6 md:p-8">
                 <p className="mb-2.5 font-mono text-[10px] uppercase tracking-[0.22em] text-ink drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
-                  {p.subtitle} — {p.year}
+                  {p.subtitle ? `${p.subtitle} — ` : ""}{p.year}
                 </p>
                 <div className="flex items-end justify-between gap-4">
-                  <h4 className="font-display text-2xl font-semibold leading-[1.05] tracking-tight text-ink drop-shadow-[0_1px_3px_rgba(0,0,0,0.7)] md:text-4xl">
+                  <h4 className="font-display text-xl font-semibold leading-[1.05] tracking-tight text-ink drop-shadow-[0_1px_3px_rgba(0,0,0,0.7)] sm:text-2xl md:text-4xl">
                     {p.title}
                   </h4>
                   <span className="grid h-12 w-12 shrink-0 translate-y-2 place-items-center rounded-full border border-white/25 bg-night/40 opacity-0 backdrop-blur transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">

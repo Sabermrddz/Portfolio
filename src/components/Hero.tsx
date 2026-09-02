@@ -128,7 +128,7 @@ function TypewriterIntro() {
   return (
     <p
       aria-label={fullText}
-      className="mb-3 inline-flex items-center font-mono text-[1.73rem] tracking-[0.02em] text-acid"
+      className="mb-3 inline-flex items-center font-mono text-[clamp(1.1rem,4.5vw,1.73rem)] tracking-[0.02em] text-acid"
     >
       <span className="mr-3 h-[1px] w-9 bg-gradient-to-r from-ash/0 via-ash/60 to-ash/0" aria-hidden />
       <span className="text-acid font-semibold">{display}</span>
@@ -243,9 +243,9 @@ function CombinedTagline() {
     style.id = "ct-style";
     style.textContent = `
       .ct-line { margin: 0; }
-      .ct-line-1 { font-family: ui-serif, Georgia, 'Times New Roman', serif; font-size: clamp(1.05rem,2.0vw,1.75rem); line-height:1.05; white-space: normal; overflow: visible; animation: ctFloat 7s ease-in-out infinite; }
+      .ct-line-1 { font-family: ui-serif, Georgia, 'Times New Roman', serif; font-size: clamp(0.95rem,3.8vw,1.75rem); line-height:1.15; white-space: normal; overflow: visible; animation: ctFloat 7s ease-in-out infinite; }
       .ct-line-1 .ct-acid { color: var(--color-acid); font-style: italic; font-weight: 400; animation: ctGlow 2.8s ease-in-out infinite; }
-      .ct-line-2 { font-size: clamp(0.95rem,1.7vw,1.25rem); margin-top:0.55rem; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.78); font-weight: 500; }
+      .ct-line-2 { font-size: clamp(0.82rem,3.2vw,1.25rem); margin-top:0.55rem; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.78); font-weight: 500; }
       .ct-word { display:inline-block; opacity:0; transform: translateY(10px); filter: blur(6px); animation: ctReveal 0.68s cubic-bezier(0.22,1,0.36,1) forwards; animation-delay: calc(var(--i) * 0.045s); }
       .ct-word.desc { animation: ctReveal 0.68s cubic-bezier(0.22,1,0.36,1) forwards, ctFloatWord 4.8s ease-in-out infinite; animation-delay: calc(var(--i) * 0.04s + 0.65s), calc(var(--i) * 0.08s + 1.8s); color: #fff; will-change: transform, opacity, filter; }
       .ct-word.acid { color: var(--color-acid); }
@@ -329,12 +329,12 @@ export default function Hero({ started }: { started: boolean }) {
       </motion.div>
 
       <motion.div
-        className="relative flex flex-1 flex-col justify-between px-6 pb-0 pt-24 md:px-10 md:pt-28"
+        className="relative flex flex-1 flex-col justify-between px-4 pb-0 pt-20 sm:px-6 sm:pt-24 md:px-10 md:pt-28"
         style={{ opacity: fade }}
       >
         {/* Metadata row */}
         <motion.div
-          className="flex items-start justify-center font-mono text-[16.5px] uppercase leading-relaxed tracking-[0.25em] text-smoke"
+          className="flex items-start justify-center font-mono text-[clamp(0.7rem,3.5vw,1.03rem)] uppercase leading-relaxed tracking-[0.25em] text-smoke"
           initial={{ opacity: 0, y: -16 }}
           animate={started ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.9, delay: 1.1, ease: EASE }}
@@ -352,7 +352,7 @@ export default function Hero({ started }: { started: boolean }) {
           </div>
 
           <h1 className="font-display font-semibold uppercase leading-[0.85] tracking-[-0.02em]">
-            <span className="block overflow-hidden text-[16vw] text-paper md:text-[15vw]">
+            <span className="block overflow-hidden text-[18vw] text-paper sm:text-[16vw] md:text-[15vw]">
               {LINE_ONE.map((letter, i) => (
                 <motion.span
                   key={i}
@@ -394,7 +394,7 @@ export default function Hero({ started }: { started: boolean }) {
           </h1>
 
           {/* Sub row — one-line first sentence + auto JS shimmer (no trigger) */}
-          <div className="mt-6 flex items-end justify-between gap-8 md:mt-8">
+          <div className="mt-4 flex items-end justify-between gap-4 sm:mt-6 sm:gap-8 md:mt-8">
             <motion.div
               className="max-w-none flex-1"
               initial={{ opacity: 0, y: 28 }}
@@ -418,17 +418,17 @@ export default function Hero({ started }: { started: boolean }) {
 
         {/* Stats bar — count-up animated */}
         <motion.div
-          className="mt-12 grid grid-cols-3 gap-px border-t border-line bg-line"
+          className="mt-8 grid grid-cols-3 gap-px border-t border-line bg-line sm:mt-12"
           initial={{ opacity: 0 }}
           animate={started ? { opacity: 1 } : {}}
           transition={{ duration: 1, delay: 1.9 }}
         >
           {heroStats.map((s, i) => (
-            <div key={s.label} className="bg-ink/80 px-4 py-5 backdrop-blur-sm md:px-6">
-              <p className="font-display text-2xl font-medium tabular-nums text-paper md:text-4xl">
+            <div key={s.label} className="bg-ink/80 px-2.5 py-4 backdrop-blur-sm sm:px-4 sm:py-5 md:px-6">
+              <p className="font-display text-xl font-medium tabular-nums text-paper sm:text-2xl md:text-4xl">
                 <CountUpStat value={s.value} started={started} delay={1900 + i * 120} />
               </p>
-              <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.22em] text-smoke md:text-[10px]">
+              <p className="mt-1 font-mono text-[8px] uppercase tracking-[0.18em] text-smoke sm:text-[9px] sm:tracking-[0.22em] md:text-[10px]">
                 {s.label}
               </p>
             </div>

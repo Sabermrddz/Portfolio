@@ -67,7 +67,8 @@ export default function VoidBackground() {
       canvas.style.height = `${h}px`;
       ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
 
-      const count = Math.min(230, Math.floor((w * h) / 7200));
+      const isMobile = w < 768;
+      const count = isMobile ? Math.min(80, Math.floor((w * h) / 12000)) : Math.min(230, Math.floor((w * h) / 7200));
       particles = Array.from({ length: count }, () => ({
         x: Math.random() * w,
         y: Math.random() * h,

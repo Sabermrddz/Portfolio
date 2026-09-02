@@ -7,13 +7,13 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 
 export default function Focus() {
   return (
-    <section className="relative px-6 pb-28 md:px-10 md:pb-40">
+    <section className="relative px-4 pb-20 sm:px-6 sm:pb-28 md:px-10 md:pb-40">
       <div className="mb-14 flex flex-col items-center text-center md:mb-20">
         <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.28em] text-paper/85 drop-shadow-[0_1px_2px_rgba(0,0,0,0.65)]">
           (What I do)
         </p>
         <motion.h2
-          className="font-display text-5xl font-medium uppercase leading-[0.95] tracking-tight text-paper md:text-8xl"
+          className="font-display text-4xl font-medium uppercase leading-[0.95] tracking-tight text-paper sm:text-5xl md:text-8xl"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
@@ -23,7 +23,7 @@ export default function Focus() {
           <br />
           <span className="text-outline">Areas</span>
         </motion.h2>
-        <p className="mx-auto mt-6 max-w-2xl font-display text-xl font-medium leading-snug tracking-tight text-paper md:mt-8 md:text-3xl md:leading-tight">
+        <p className="mx-auto mt-5 max-w-2xl font-display text-lg font-medium leading-snug tracking-tight text-paper sm:text-xl md:mt-8 md:text-3xl md:leading-tight">
           Three lanes. Everything filed under one of them.
         </p>
       </div>
@@ -34,7 +34,7 @@ export default function Focus() {
             <motion.article
               data-cursor="hover"
               className={cn(
-                "group relative flex min-h-[46vh] flex-col justify-between overflow-hidden rounded-lg border p-8 md:p-14",
+                "group relative flex min-h-[38vh] flex-col justify-between overflow-hidden rounded-lg border p-6 sm:min-h-[46vh] sm:p-8 md:p-14",
                 f.invert ? "border-acid bg-acid text-ink" : "border-line bg-panel text-paper"
               )}
               style={{
@@ -72,10 +72,10 @@ export default function Focus() {
               </div>
 
               {i !== 2 ? (
-                <div className="relative z-10 grid grid-cols-12 items-end gap-8 rounded-2xl border border-white/10 bg-ink/30 p-5 backdrop-blur-md md:p-7">
+                <div className="relative z-10 grid grid-cols-12 items-end gap-4 rounded-2xl border border-white/10 bg-ink/30 p-4 backdrop-blur-md sm:gap-8 sm:p-5 md:p-7">
                   <h3
                     className={cn(
-                      "col-span-12 font-display text-4xl font-medium uppercase leading-[0.95] tracking-tight md:col-span-7 md:text-7xl",
+                      "col-span-12 font-display text-3xl font-medium uppercase leading-[0.95] tracking-tight sm:text-4xl md:col-span-7 md:text-7xl",
                       f.invert ? "text-ink" : "text-paper"
                     )}
                   >
@@ -100,7 +100,7 @@ export default function Focus() {
                 </div>
               ) : (
                 <div className="relative z-10 mt-auto flex flex-col gap-6 pt-8 md:pt-12">
-                  <h3 className="max-w-2xl font-display text-4xl font-medium uppercase leading-[0.95] tracking-tight text-ink md:text-7xl">
+                  <h3 className="max-w-2xl font-display text-3xl font-medium uppercase leading-[0.95] tracking-tight text-ink sm:text-4xl md:text-7xl">
                     {f.title}
                   </h3>
                   <p className="max-w-2xl text-sm font-normal leading-relaxed text-ink/88 md:text-base">

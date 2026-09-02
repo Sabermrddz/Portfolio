@@ -5,14 +5,14 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 
 export default function Achievements() {
   return (
-    <section className="relative px-6 py-28 md:px-10 md:py-40">
+    <section className="relative px-4 py-20 sm:px-6 sm:py-28 md:px-10 md:py-40">
       <div className="mb-14 flex items-end justify-between md:mb-20">
         <div>
           <span className="mb-5 inline-flex items-center rounded-full border border-white/15 bg-white/[0.06] px-5 py-2 font-body text-[13px] font-bold uppercase tracking-[0.2em] text-paper backdrop-blur-sm md:px-6 md:py-2.5 md:text-[15px]">
             (03 — Achievements)
           </span>
           <motion.h2
-            className="font-display text-5xl font-medium uppercase leading-[0.95] tracking-tight text-paper md:text-8xl"
+            className="font-display text-4xl font-medium uppercase leading-[0.95] tracking-tight text-paper sm:text-5xl md:text-8xl"
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
@@ -33,7 +33,7 @@ export default function Achievements() {
           <motion.article
             key={a.label}
             data-cursor="hover"
-            className="group relative overflow-hidden bg-ink p-8 transition-colors duration-500 hover:bg-panel md:p-12"
+            className="group relative overflow-hidden bg-ink p-6 transition-colors duration-500 hover:bg-panel sm:p-8 md:p-12"
             initial={{ opacity: 0, y: 28 }}
             animate={{
               opacity: 1,
@@ -65,7 +65,7 @@ export default function Achievements() {
               style={{ willChange: "transform" }}
             />
             <div className="flex items-start justify-between">
-              <p className="font-display text-5xl font-medium tracking-tight text-paper transition-colors duration-500 group-hover:text-acid md:text-7xl drop-shadow-[0_1px_3px_rgba(0,0,0,0.55)]">
+              <p className="font-display text-4xl font-medium tracking-tight text-paper transition-colors duration-500 group-hover:text-acid sm:text-5xl md:text-7xl drop-shadow-[0_1px_3px_rgba(0,0,0,0.55)]">
                 {a.value}
               </p>
               <motion.span

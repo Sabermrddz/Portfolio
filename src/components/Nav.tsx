@@ -25,7 +25,7 @@ export default function Nav({ started, menuOpen, onToggleMenu, onNavigate }: Nav
       animate={started ? { y: 0, opacity: 1 } : {}}
       transition={{ duration: 0.9, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
     >
-      <nav className="flex items-center justify-between px-6 py-5 md:px-10">
+      <nav className="flex items-center justify-between px-4 py-4 sm:px-6 sm:py-5 md:px-10">
         <div className="flex items-center min-w-[6rem] md:min-w-[8rem]">
           <button
             data-cursor="hover"

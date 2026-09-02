@@ -182,7 +182,7 @@ export default function App() {
       <div className="relative z-10">
         <Hero started={!loading} />
 
-        <Ticker items={stackTicker} className="border-y py-5 md:py-7" />
+        <Ticker items={stackTicker} className="border-y py-3 sm:py-5 md:py-7" />
 
         <DeferredSection>
           <Suspense fallback={null}>
@@ -214,7 +214,7 @@ export default function App() {
           items={["DM for collaboration", "View archive", "Send transmission"]}
           reverse
           outline
-          className="border-y py-5 md:py-7"
+          className="border-y py-3 sm:py-5 md:py-7"
         />
 
         <DeferredSection>

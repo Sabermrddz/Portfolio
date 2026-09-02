@@ -18,12 +18,12 @@ export default function Ticker({ items, reverse = false, outline = false, classN
               <span
                 key={`${dup}-${i}`}
                 className={cn(
-                  "flex items-center gap-6 pr-6 font-display text-4xl font-medium uppercase leading-none tracking-tight md:gap-10 md:pr-10 md:text-6xl",
+                  "flex items-center gap-4 pr-4 font-display text-2xl font-medium uppercase leading-none tracking-tight sm:gap-6 sm:pr-6 sm:text-4xl md:gap-10 md:pr-10 md:text-6xl",
                   outline && "text-outline"
                 )}
               >
                 {item}
-                <Asterisk className="h-8 w-8 text-acid md:h-12 md:w-12" strokeWidth={1.5} />
+                <Asterisk className="h-5 w-5 text-acid sm:h-8 sm:w-8 md:h-12 md:w-12" strokeWidth={1.5} />
               </span>
             ))}
           </div>
