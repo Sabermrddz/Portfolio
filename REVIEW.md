@@ -2,58 +2,52 @@
 
 ## Project Overview
 
-The project is now a dual-mode application:
+The project is a modern dual-mode application:
 1. **Frontend**: A React Single Page Application (SPA) built with Vite, TypeScript, and modern CSS/animations.
 2. **Backend**:
-   - **New Architecture**: An Azure Functions API located in the `api/` directory. This is the active backend structure intended for deployment on Azure Static Web Apps (Free tier).
+   - **New Architecture**: Vercel Serverless Functions located in the `api/` directory. This is the active backend structure intended for deployment on Vercel.
    - **Legacy Architecture**: An Express server located in the `server/` directory. This has been retained purely for reference and is no longer used in the active deployment pipeline.
 
-By moving to Azure Functions and Azure Static Web Apps, the frontend and backend can be hosted together in a single service without the need for a persistently running Node.js server, significantly reducing hosting costs and simplifying deployment.
+By moving to Vercel Serverless Functions, the frontend and backend are hosted seamlessly in a single Vercel deployment, leveraging serverless architecture for zero-maintenance auto-scaling, high performance, and minimal hosting costs.
 
 ## New `api/` Folder Structure
 
-The `api/` directory utilizes the Azure Functions v4 Node.js programming model.
+The `api/` directory utilizes Vercel Serverless Functions (Node.js runtime). Each file represents an individual HTTP endpoint.
 
-- **`api/package.json` & `api/host.json`**: Standard Azure Functions v4 configuration files, including dependencies like `@azure/functions` and `nodemailer`.
-- **`api/src/functions/contact.js`**: An HTTP-triggered Azure Function that replaces the legacy `POST /api/contact` Express route. It validates incoming contact form submissions and uses `nodemailer` to dispatch the email.
-- **`api/src/functions/visit.js`**: An HTTP-triggered Azure Function that replaces the legacy `POST /api/visit` Express route. It parses visitor metadata (IP, user-agent, language, page, timezone) from the Azure request context and uses `nodemailer` to send an analytics email.
-- **`api/src/functions/health.js`**: An HTTP-triggered Azure Function that replaces the legacy `GET /api/health` Express route, providing a simple status check and verifying if email credentials are set.
-- **`api/src/visitor.js`**: A shared helper module (adapted from `server/visitor.js`) containing reusable logic for device detection, HTML email templating, and the core visitor email sending logic. Both `contact.js` and `visit.js` rely on this.
+- **`api/contact.js`**: An HTTP-triggered serverless function replicating the contact form logic. It accepts `POST` requests, validates incoming form data, and uses `nodemailer` to dispatch emails. Mapped to `/api/contact`.
+- **`api/visit.js`**: An HTTP-triggered serverless function replicating the visitor analytics logic. It accepts `POST` requests, extracts visitor metadata (IP, user-agent, language, page, timezone) from the request headers and body, and uses `nodemailer` to send a notification. Mapped to `/api/visit`.
+- **`api/health.js`**: A simple endpoint serving a `GET` health check to confirm the API is responsive and email variables are set. Mapped to `/api/health`.
+- **`api/_visitor-helper.js`**: A shared helper module containing the core email templating and device detection logic for visitor tracking. Files prefixed with `_` are ignored by Vercel's routing, keeping it purely as an imported helper module.
 
 ## Environment Variables
 
-All environment variables have remained **completely unchanged** to ensure a seamless transition:
+All environment variables have remained **completely unchanged**:
 - `EMAIL_HOST_USER`: Your Gmail address.
 - `EMAIL_HOST_PASSWORD`: Your 16-digit Google App Password.
 
-The new Azure Functions read from these exact same variables via `process.env`.
+The Vercel Serverless Functions read from these exact variables via `process.env`.
 
-## `staticwebapp.config.json` Summary
+## `vercel.json` Summary
 
-A `staticwebapp.config.json` file has been added to the project root. This configuration ensures:
-1. **SPA Fallback Routing**: Unrecognized frontend routes (e.g., if a user refreshes a page on a specific route) automatically fall back to `/index.html`, which is required for React Router to function properly.
-2. **API Passthrough**: Azure Static Web Apps automatically proxies any requests to `/api/*` directly to the Azure Functions backend (`api/` folder) without any additional configuration required in the frontend fetch calls.
-3. **Caching**: Disables caching on dynamic routes to ensure fresh data.
+A `vercel.json` file has been added to the project root. This configuration ensures:
+1. **Build Commands**: Explicitly sets `npm run build` and output directory `dist` for Vite.
+2. **API Routing**: Ensures `/api/(.*)` requests correctly resolve to the Functions.
+3. **SPA Fallback Routing**: Unrecognized frontend routes (e.g., if a user refreshes a page on a specific route) automatically rewrite to `/index.html`, which is crucial for React Router to function properly.
 
-## Deployment Recommendation: Azure Static Web Apps
+## Deployment Recommendation: Vercel (Hobby Tier)
 
-**Azure Static Web Apps (Free Tier)** is the recommended hosting approach. It will automatically build and deploy both your React frontend and your Azure Functions backend from a single GitHub repository.
+**Vercel (Hobby Tier)** is the recommended hosting approach. It will automatically build and deploy both your React frontend and your serverless backend from your GitHub repository with virtually zero configuration.
 
-### Manual Steps Required in Azure Portal / CLI
+### Manual Steps Required for Deployment
 
 To complete the deployment, you will need to perform the following steps:
 
-- [ ] **Create the Resource**: In the Azure Portal, create a new "Static Web App".
-- [ ] **Link GitHub Repository**: Connect it to your GitHub repository (`Sabermrddz/Portfolio`).
-- [ ] **Configure Build Settings**:
-  - Build Presets: React
-  - App location: `/` (Root directory for the frontend)
-  - Api location: `api` (Directory for the Azure Functions)
-  - Output location: `dist` (Vite's default build folder)
-- [ ] **Set Application Settings**: Once the resource is created, navigate to **Settings > Configuration** in the Azure Portal and add your environment variables:
+- [ ] **Import Repository**: Log in to the [Vercel Dashboard](https://vercel.com/dashboard) and click "Add New... > Project". Select your GitHub repository (`Sabermrddz/Portfolio`).
+- [ ] **Configure Build Settings**: Vercel should automatically detect Vite. Confirm the Build Command is `npm run build` and the Output Directory is `dist`.
+- [ ] **Set Environment Variables**: In the deployment configuration step, add the following under "Environment Variables":
   - Name: `EMAIL_HOST_USER`, Value: (Your Gmail)
   - Name: `EMAIL_HOST_PASSWORD`, Value: (Your 16-digit App Password)
-- [ ] **Verify Deployment**: Azure will automatically trigger a GitHub Action to build and deploy your app. Check the Actions tab in your GitHub repo for the status.
+- [ ] **Deploy**: Click "Deploy" and wait for the build to complete. Vercel will automatically provision the URLs for your site and functions.
 
 ---
-*Note: The old Express backend in `server/` remains fully intact. If you ever need to run the legacy server locally, you can still use `npm run server`, though the frontend now expects to communicate with the Azure Functions when deployed to SWA.*
+*Note: The old Express backend in `server/` remains fully intact for reference. You can test the setup locally by running Vercel's CLI command (`npx vercel dev`), which will serve both the Vite frontend and the serverless functions simultaneously.*
