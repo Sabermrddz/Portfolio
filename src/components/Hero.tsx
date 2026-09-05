@@ -305,6 +305,46 @@ export default function Hero({ started }: { started: boolean }) {
     return () => { document.head.removeChild(style); };
   }, []);
   const ref = useRef<HTMLElement>(null);
+  const mouradRef = useRef<HTMLSpanElement>(null);
+  // Auto-fit MOURAD so the trailing "D." can never be clipped on narrow phones.
+  // Measures real rendered width (after Syne loads) and only ever shrinks.
+  useEffect(() => {
+    const el = mouradRef.current;
+    if (!el) return;
+    const fit = () => {
+      const target = mouradRef.current;
+      if (!target) return;
+      target.style.fontSize = "";
+      const available = target.clientWidth;
+      const needed = target.scrollWidth;
+      if (!available || !needed || needed <= available) return;
+      const base = parseFloat(getComputedStyle(target).fontSize) || 16;
+      const next = Math.floor(base * (available / needed) * 0.995 * 10) / 10;
+      if (next > 0 && next < base) target.style.fontSize = `${next}px`;
+    };
+    fit();
+    const raf = requestAnimationFrame(fit);
+    let fontsPromise: Promise<unknown> | undefined;
+    try {
+      fontsPromise = (document as Document & { fonts?: { ready: Promise<unknown> } }).fonts?.ready;
+      fontsPromise?.then(() => fit()).catch(() => {});
+    } catch {
+      /* ignore */
+    }
+    window.addEventListener("resize", fit);
+    window.addEventListener("orientationchange", fit);
+    let ro: ResizeObserver | undefined;
+    if (typeof ResizeObserver !== "undefined" && el.parentElement) {
+      ro = new ResizeObserver(() => fit());
+      ro.observe(el.parentElement);
+    }
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", fit);
+      window.removeEventListener("orientationchange", fit);
+      ro?.disconnect();
+    };
+  }, [started]);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "22%"]);
   const bgScale = useTransform(scrollYProgress, [0, 1], [1, 1.12]);
@@ -351,8 +391,8 @@ export default function Hero({ started }: { started: boolean }) {
             </div>
           </div>
 
-          <h1 className="font-display font-semibold uppercase leading-[0.85] tracking-[-0.02em]">
-            <span className="block overflow-hidden text-[18vw] text-paper sm:text-[16vw] md:text-[15vw]">
+          <h1 className="font-display w-full max-w-full font-semibold uppercase leading-[0.85] tracking-[-0.02em]">
+            <span className="block w-full max-w-full overflow-hidden text-[17.5svw] text-paper sm:text-[16vw] md:text-[15vw]">
               {LINE_ONE.map((letter, i) => (
                 <motion.span
                   key={i}
@@ -366,7 +406,8 @@ export default function Hero({ started }: { started: boolean }) {
               ))}
             </span>
             <span
-              className="block overflow-hidden pl-[6vw] whitespace-nowrap text-[clamp(2.5rem,13vw,10rem)] font-extrabold tracking-tight [filter:drop-shadow(0_4px_18px_rgba(244,241,234,0.10))]"
+              ref={mouradRef}
+              className="block w-full max-w-full overflow-hidden pl-[2vw] pr-[5vw] pb-[0.1em] -mb-[0.1em] whitespace-nowrap text-[clamp(1.6rem,8.8svw,10rem)] font-extrabold tracking-tight sm:pl-[6vw] sm:pr-[3vw] sm:text-[clamp(2rem,10vw,10rem)] md:text-[clamp(2rem,9.5vw,10rem)] [filter:drop-shadow(0_4px_18px_rgba(244,241,234,0.10))]"
               style={{ fontFamily: '"Syne", sans-serif' }}
             >
               {LINE_TWO.map((letter, i) => (

@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import Lenis from "lenis";
 import { gsap, ScrollTrigger, lenisStore } from "./lib/anim";
@@ -8,6 +8,7 @@ import Menu from "./components/Menu";
 import Hero from "./components/Hero";
 import Ticker from "./components/Ticker";
 import DeferredSection from "./components/DeferredSection";
+import BackgroundMusic from "./components/BackgroundMusic";
 import VoidBackground from "./components/VoidBackground";
 import { stackTicker } from "./data/archive";
 
@@ -72,7 +73,7 @@ export default function App() {
 
   /* Lenis + GSAP wiring for pinned Showcase (transision) */
   useEffect(() => {
-    const lenis = new Lenis({ lerp: 0.09, smoothWheel: true });
+    const lenis = new Lenis({ lerp: 0.0765, wheelMultiplier: 0.7225, touchMultiplier: 0.7225, smoothWheel: true });
     lenisStore.current = lenis;
     lenis.stop();
 
@@ -104,49 +105,12 @@ export default function App() {
     if (!loading) ScrollTrigger.refresh();
   }, [loading, menuOpen]);
 
-  const visitorEmailSentRef = useRef(false);
-
-  useEffect(() => {
-    const key = "portfolio_visitor_email_sent";
-    if (visitorEmailSentRef.current) return;
-    if (sessionStorage.getItem(key) === "1") {
-      visitorEmailSentRef.current = true;
-      return;
-    }
-
-    visitorEmailSentRef.current = true;
-    sessionStorage.setItem(key, "1");
-
-    const sendVisitorEmail = async () => {
-      try {
-        const payload = {
-          userAgent: navigator.userAgent,
-          page: window.location.href,
-          language: navigator.language,
-          screen: `${window.screen.width} × ${window.screen.height}`,
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown",
-          device: /Mobi|Android|iPhone|iPad|Mobile/i.test(navigator.userAgent) ? "Mobile" : "Desktop",
-        };
-
-        await fetch("/api/visit", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-      } catch (err) {
-        console.error("Visitor email send failed:", err);
-      }
-    };
-
-    sendVisitorEmail();
-  }, []);
-
   const scrollTo = (target: string) => {
     const go = () => {
       const el = target === "#top" ? document.body : document.querySelector(target);
       if (!el) return;
       lenisStore.current?.scrollTo(target === "#top" ? 0 : (el as HTMLElement), {
-        duration: 1.6,
+        duration: 1.85,
         easing: (t: number) => 1 - Math.pow(1 - t, 4),
       });
     };
@@ -160,6 +124,7 @@ export default function App() {
 
   return (
     <main className="relative bg-ink font-body text-paper">
+      <BackgroundMusic />
       {/* v1 moving background — global, behind everything, same as bubbles box */}
       <VoidBackground />
       <div className="bg-grid pointer-events-none fixed inset-0 z-[1]" aria-hidden="true" />

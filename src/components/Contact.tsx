@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import SectionHead from "./SectionHead";
 import { XLogo } from "./icons";
-import { Send, Check, Loader2, ShieldCheck, ArrowUpRight } from "lucide-react";
+import { ShieldCheck, ArrowUpRight } from "lucide-react";
 
 /* keep exactly as in v1 — orbit definitions in stage fractions */
 const ORBITS = [
@@ -35,11 +35,6 @@ export default function Contact() {
   const bubblesRef = useRef<(HTMLAnchorElement | null)[]>([null, null, null, null, null, null]);
   const hoverState = useRef([false, false, false, false, false, false]);
 
-  const [values, setValues] = useState({ name: "", email: "", message: "" });
-  const [focused, setFocused] = useState<string | null>(null);
-  const [sending, setSending] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const formCardRef = useRef<HTMLDivElement>(null);
   const reduceMotion =
     typeof window !== "undefined"
@@ -249,39 +244,7 @@ export default function Contact() {
     };
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (sending || submitted) return;
-    setSending(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || "Failed to send. Try again.");
-      setSubmitted(true);
-    } catch (err: unknown) {
-      let msg = err instanceof Error ? err.message : "Failed to send. Check your connection.";
-      // Vite proxy ECONNREFUSED → fetch TypeError: Failed to fetch
-      if (/Failed to fetch|ECONNREFUSED|NetworkError/i.test(msg)) {
-        msg = "Email server not reachable. If you use `npm run dev`, Vite now handles email directly — just set real Gmail + App Password in .env and retry. Or run `npm run dev:all` / `npm run server` in another terminal.";
-      }
-      setError(msg);
-    } finally {
-      setSending(false);
-    }
-  };
-
-  const resetForm = () => {
-    setSubmitted(false);
-    setSending(false);
-    setError(null);
-    setValues({ name: "", email: "", message: "" });
-    setFocused(null);
-  };
+  // Backend removed — frontend-only contact (no messages, no tracking).
 
   return (
     <section id="contact" className="relative py-16 sm:py-24 md:py-32">
@@ -420,142 +383,30 @@ export default function Contact() {
               <div className="relative" style={{ transform: "translateZ(18px)" }}>
                 <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.08] px-3.5 py-1.5 backdrop-blur">
                   <span className="h-1.5 w-1.5 rounded-full bg-paper" />
-                  <span className="font-body text-[0.68rem] font-bold tracking-[0.22em] text-paper">SECURE TRANSMISSION</span>
+                  <span className="font-body text-[0.68rem] font-bold tracking-[0.22em] text-paper">DIRECT CHANNELS</span>
                   <ArrowUpRight size={12} className="text-paper" />
                 </div>
                 <h4 className="mt-4 font-serif text-[2.2rem] leading-[0.95] tracking-tight text-paper sm:text-[2.8rem]">
-                  Send a <span className="italic font-light text-paper">message.</span>
+                  Find me <span className="italic font-light text-paper">directly.</span>
                 </h4>
                 <p className="mt-3 max-w-[36ch] font-mono text-[0.82rem] leading-relaxed tracking-wide text-paper/85 sm:text-[0.88rem]">
-                  Simple form — just type and send.
+                  No forms, no tracking — just orbit above or ping me on any channel.
                 </p>
               </div>
 
               <div className="relative mt-6 flex-1" style={{ transform: "translateZ(22px)" }}>
-                {submitted ? (
-                  <div className="relative overflow-hidden rounded-2xl border border-emerald-300/40 bg-emerald-400/[0.09] p-7 text-center shadow-[0_0_36px_rgba(16,185,129,0.12)] backdrop-blur-md sm:p-8">
-                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgba(16,185,129,0.12),transparent_70%)]" />
-                    <div className="relative">
-                      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-300 text-void shadow-[0_8px_30px_rgba(16,185,129,0.4)]">
-                        <Check size={26} strokeWidth={2.8} />
-                      </div>
-                      <h5 className="mt-5 font-serif text-[1.65rem] font-medium tracking-tight text-emerald-200 sm:text-[1.9rem]">Message sent.</h5>
-                      <p className="mx-auto mt-2 max-w-[32ch] font-mono text-[0.78rem] leading-relaxed tracking-wide text-paper/90 sm:text-[0.84rem]">
-                        Your message has been sealed and queued. I&apos;ll reply within a few hours — usually faster.
-                      </p>
-                      <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-center">
-                        <button
-                          onClick={resetForm}
-                          className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-2.5 font-mono text-[0.62rem] font-bold tracking-[0.18em] text-emerald-300 transition hover:bg-emerald-400/15"
-                        >
-                          SEND ANOTHER <ArrowUpRight size={12} />
-                        </button>
-                      </div>
-                      <p className="hidden">
-                        ID: {Math.random().toString(36).slice(2, 8).toUpperCase()} • {new Date().toLocaleTimeString()}
-                      </p>
-                    </div>
+                {true && (
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                    <a href={SOCIALS.telegram} target="_blank" rel="noreferrer" className="group/btn flex items-center justify-center gap-2 rounded-xl bg-paper px-4 py-4 font-mono text-[0.78rem] font-bold tracking-[0.18em] text-void transition-all duration-300 hover:translate-y-[-1px]">
+                      TELEGRAM <ArrowUpRight size={14} />
+                    </a>
+                    <a href={SOCIALS.github} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.06] px-4 py-4 font-mono text-[0.78rem] font-bold tracking-[0.18em] text-paper backdrop-blur-md transition-all duration-300 hover:translate-y-[-1px] hover:border-paper/30">
+                      GITHUB <ArrowUpRight size={14} />
+                    </a>
+                    <a href={SOCIALS.discord} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.06] px-4 py-4 font-mono text-[0.78rem] font-bold tracking-[0.18em] text-paper backdrop-blur-md transition-all duration-300 hover:translate-y-[-1px] hover:border-paper/30">
+                      DISCORD <ArrowUpRight size={14} />
+                    </a>
                   </div>
-                ) : (
-                  <form onSubmit={handleSubmit} className="space-y-3.5">
-                    <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
-                      <label className="group/field relative block">
-                        <span className="mb-1.5 block font-mono text-[0.68rem] font-medium tracking-[0.18em] text-paper group-focus-within/field:text-paper">YOUR NAME</span>
-                        <div className="relative">
-                          <input
-                            type="text"
-                            name="name"
-                            value={values.name}
-                            onChange={(e) => setValues((v) => ({ ...v, name: e.target.value }))}
-                            onFocus={() => setFocused("name")}
-                            onBlur={() => setFocused(null)}
-                            placeholder="you"
-                            required
-                            className="peer w-full rounded-xl border border-white/[0.08] bg-transparent px-3.5 py-3 pr-9 font-mono text-[0.9rem] font-medium tracking-wide text-paper placeholder:text-paper/55 backdrop-blur-md outline-none transition-all duration-300 focus:border-paper/20 focus:bg-transparent focus:shadow-[0_0_22px_rgba(244,241,234,0.08)]"
-                          />
-                          <span className={`pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-1 transition ${focused === "name" || values.name ? "bg-paper text-void" : "bg-white/5 text-ash/60"}`}>
-                            <span className="block h-1.5 w-1.5 rounded-full bg-current" />
-                          </span>
-                        </div>
-                      </label>
-
-                      <label className="group/field relative block">
-                        <span className="mb-1.5 block font-mono text-[0.68rem] font-medium tracking-[0.18em] text-paper group-focus-within/field:text-paper">EMAIL ADDRESS</span>
-                        <div className="relative">
-                          <input
-                            type="email"
-                            name="email"
-                            value={values.email}
-                            onChange={(e) => setValues((v) => ({ ...v, email: e.target.value }))}
-                            onFocus={() => setFocused("email")}
-                            onBlur={() => setFocused(null)}
-                            placeholder="yourmail@domain.com"
-                            required
-                            className="peer w-full rounded-xl border border-white/[0.08] bg-transparent px-3.5 py-3 pr-9 font-mono text-[0.9rem] font-medium tracking-wide text-paper placeholder:text-paper/55 backdrop-blur-md outline-none transition-all duration-300 focus:border-paper/20 focus:bg-transparent focus:shadow-[0_0_22px_rgba(244,241,234,0.08)]"
-                          />
-                          <span className={`pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-1 transition ${focused === "email" || values.email ? "bg-paper text-void" : "bg-white/5 text-ash/60"}`}>
-                            <span className="text-[0.62rem] leading-none">✦</span>
-                          </span>
-                        </div>
-                      </label>
-                    </div>
-
-                    <label className="group/field relative block">
-                      <span className="mb-1.5 flex items-center justify-between font-mono text-[0.68rem] font-medium tracking-[0.18em] text-paper group-focus-within/field:text-paper">
-                        <span>MESSAGE</span>
-                        <span className="font-mono text-[0.64rem] font-medium tracking-wide text-paper/70">{values.message.length}/500</span>
-                      </span>
-                      <div className="relative">
-                        <textarea
-                          name="message"
-                          value={values.message}
-                          onChange={(e) => setValues((v) => ({ ...v, message: e.target.value.slice(0, 500) }))}
-                          onFocus={() => setFocused("message")}
-                          onBlur={() => setFocused(null)}
-                          placeholder="Tell me about your idea, project, or just say hi..."
-                          rows={4}
-                          required
-                          className="peer max-h-[140px] min-h-[110px] w-full resize-none rounded-xl border border-white/[0.08] bg-transparent px-3.5 py-3 font-mono text-[0.9rem] font-medium leading-relaxed tracking-wide text-paper placeholder:text-paper/55 backdrop-blur-md outline-none transition-all duration-300 focus:border-paper/20 focus:bg-transparent focus:shadow-[0_0_22px_rgba(244,241,234,0.08)]"
-                        />
-                        <div className="pointer-events-none absolute bottom-2 right-2 hidden items-center gap-1 rounded-full border border-white/10 bg-void/60 px-2 py-1 backdrop-blur sm:flex">
-                          <span className="h-1 w-1 rounded-full bg-emerald-400/80" />
-                          <span className="font-mono text-[0.62rem] font-medium tracking-[0.16em] text-paper/80">E2E</span>
-                        </div>
-                      </div>
-                    </label>
-
-                    <button
-                      type="submit"
-                      disabled={sending}
-                      className="group/btn relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-paper px-6 py-4 font-mono text-[0.84rem] font-bold tracking-[0.18em] text-void antialiased shadow-[0_10px_30px_rgba(244,241,234,0.14),inset_0_1px_0_rgba(255,255,255,0.7)] transition-all duration-300 hover:translate-y-[-1px] hover:shadow-[0_14px_40px_rgba(244,241,234,0.18),inset_0_1px_0_rgba(255,255,255,0.8)] active:translate-y-[0px] disabled:cursor-not-allowed disabled:opacity-90"
-                      style={{ transform: "translateZ(10px)" }}
-                    >
-                      <span className="pointer-events-none absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-60 transition duration-700 group-hover/btn:translate-x-[100%]" aria-hidden="true" />
-                      {sending ? (
-                        <>
-                          <Loader2 size={16} className="animate-spin" />
-                          SEALING &amp; SENDING...
-                        </>
-                      ) : (
-                        <>
-                          <Send size={16} className="transition group-hover/btn:translate-x-0.5" />
-                          SEND TRANSMISSION
-                          <ArrowUpRight size={14} className="opacity-80 transition group-hover/btn:translate-x-0.5 group-hover/btn:opacity-100" />
-                        </>
-                      )}
-                    </button>
-
-                    {error && (
-                      <p className="rounded-xl border border-red-400/20 bg-red-400/10 px-4 py-3 text-center font-mono text-[0.72rem] leading-relaxed text-red-300">
-                        {error}
-                      </p>
-                    )}
-
-                    <p className="flex items-center justify-center gap-1.5 pt-1 text-center font-body text-[0.68rem] font-bold tracking-wide text-paper/80 uppercase">
-                      <ShieldCheck size={12} className="text-paper/70" />
-                      Encrypted channel • No spam • Reply in ~2h
-                    </p>
-                  </form>
                 )}
               </div>
 

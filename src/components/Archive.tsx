@@ -116,6 +116,9 @@ export default function Archive() {
     const ctx = gsap.context(() => {
       const trackEl = track.current!;
       const getDist = () => Math.max(0, trackEl.scrollWidth - window.innerWidth);
+      const isPhone = window.matchMedia("(max-width: 767px)").matches;
+      const scrub = isPhone ? 0.65 : 1.5;
+      const endMultiplier = isPhone ? 1.15 : 1.5;
 
       const tween = gsap.to(trackEl, {
         x: () => -getDist(),
@@ -123,9 +126,9 @@ export default function Archive() {
         scrollTrigger: {
           trigger: wrap.current!,
           start: "top top",
-          end: () => `+=${getDist()}`,
+          end: () => `+=${getDist() * endMultiplier}`,
           pin: true,
-          scrub: 1,
+          scrub,
           anticipatePin: 1,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
@@ -137,16 +140,16 @@ export default function Archive() {
       gsap.utils.toArray<HTMLElement>("[data-panel-img]").forEach((img) => {
         gsap.fromTo(
           img,
-          { xPercent: -8 },
+          { xPercent: isPhone ? -4 : -8 },
           {
-            xPercent: 8,
+            xPercent: isPhone ? 4 : 8,
             ease: "none",
             scrollTrigger: {
               trigger: img.parentElement!,
               containerAnimation: tween,
               start: "left right",
               end: "right left",
-              scrub: true,
+              scrub: isPhone ? 0.35 : 1,
             },
           },
         );
